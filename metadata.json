@@ -1,0 +1,6 @@
+{
+  "name": "Quick Schools Mobile & Shared Backend",
+  "description": "Quick Schools Flutter mobile application integrated with shared Next.js backend, PostgreSQL Prisma schema, RBAC authentication, and live mobile simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

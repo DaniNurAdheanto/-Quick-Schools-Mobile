@@ -1,0 +1,48 @@
+name: quick_schools_mobile
+description: "Quick Schools Mobile App for Android & iOS - Integrated with Next.js Backend & PostgreSQL"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management & Architecture
+  provider: ^6.1.2
+
+  # Networking & API Integration
+  http: ^1.2.1
+  dio: ^5.4.3+1
+
+  # Local Persistence & Secure Storage
+  flutter_secure_storage: ^9.0.0
+  shared_preferences: ^2.2.3
+
+  # UI, Icons, Typography & Theming
+  google_fonts: ^6.2.1
+  lucide_icons: ^0.257.0
+  flutter_svg: ^2.0.10+1
+  intl: ^0.19.0
+  cached_network_image: ^3.3.1
+  fl_chart: ^0.68.0
+
+  # Utilities
+  uuid: ^4.4.0
+  flutter_dotenv: ^5.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env
+    - assets/images/
+    - assets/icons/
