@@ -32,17 +32,56 @@ class GradeModel {
     return 'E';
   }
 
+  static String _normalizeType(String rawType) {
+    switch (rawType.toUpperCase().trim()) {
+      case 'TUGAS':
+      case 'DAILY_TASK':
+        return 'DAILY_TASK';
+      case 'UTS':
+      case 'MIDTERM_EXAM':
+        return 'MIDTERM_EXAM';
+      case 'UAS':
+      case 'PROYEK':
+      case 'PROJECT':
+        return 'PROJECT';
+      case 'ULANGAN':
+      case 'KUIS':
+      case 'QUIZ':
+        return 'QUIZ';
+      default:
+        return rawType;
+    }
+  }
+
   factory GradeModel.fromJson(Map<String, dynamic> json) {
+    final subjectMap = json['subject'] is Map ? json['subject'] as Map : null;
+    final subjectName = (subjectMap?['name'] ??
+            json['subjectName'] ??
+            (json['subject'] is String ? json['subject'] : null) ??
+            'Mata Pelajaran')
+        .toString();
+    final subjectCode =
+        (subjectMap?['code'] ?? json['subjectCode'] ?? 'MAPEL').toString();
+    final rawType = (json['type'] ?? 'DAILY_TASK').toString();
+    final rawNotes = json['remarks'] ?? json['notes'];
+    final cleanNotes =
+        (rawNotes != null && rawNotes.toString().trim() != '-')
+            ? rawNotes.toString().trim()
+            : null;
+
     return GradeModel(
-      id: json['id'] ?? '',
-      subjectName: json['subject']?['name'] ?? json['subjectName'] ?? 'Mata Pelajaran',
-      subjectCode: json['subject']?['code'] ?? json['subjectCode'] ?? 'SUBJ',
-      title: json['title'] ?? 'Tugas',
-      type: json['type'] ?? 'DAILY_TASK',
+      id: (json['id'] ?? '').toString(),
+      subjectName: subjectName,
+      subjectCode: subjectCode,
+      title: (json['title'] ?? '$rawType • $subjectName').toString(),
+      type: _normalizeType(rawType),
       score: (json['score'] as num?)?.toDouble() ?? 0.0,
       maxScore: (json['maxScore'] as num?)?.toDouble() ?? 100.0,
-      remarks: json['remarks'],
-      gradedAt: DateTime.tryParse(json['gradedAt'] ?? '') ?? DateTime.now(),
+      remarks: cleanNotes,
+      gradedAt: DateTime.tryParse(
+            (json['gradedAt'] ?? json['createdAt'] ?? '').toString(),
+          ) ??
+          DateTime.now(),
     );
   }
 }
@@ -88,17 +127,32 @@ class ScheduleModel {
   }
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
+    final subjectMap = json['subject'] is Map ? json['subject'] as Map : null;
+    final teacherMap = json['teacher'] is Map ? json['teacher'] as Map : null;
+    final teacherUser =
+        teacherMap?['user'] is Map ? teacherMap!['user'] as Map : null;
+
+    final resolvedTeacher = teacherUser != null
+        ? '${teacherUser['firstName'] ?? ''} ${teacherUser['lastName'] ?? ''}'.trim()
+        : (json['teacherName'] ??
+                (json['teacher'] is String ? json['teacher'] : null) ??
+                'Guru')
+            .toString();
+
     return ScheduleModel(
-      id: json['id'] ?? '',
-      subjectName: json['subject']?['name'] ?? json['subjectName'] ?? 'Pelajaran',
-      subjectCode: json['subject']?['code'] ?? json['subjectCode'] ?? '',
-      teacherName: json['teacher']?['user'] != null
-          ? '${json['teacher']['user']['firstName']} ${json['teacher']['user']['lastName']}'
-          : json['teacherName'] ?? 'Guru',
-      room: json['room'] ?? 'Kelas',
-      dayOfWeek: json['dayOfWeek'] ?? 1,
-      startTime: json['startTime'] ?? '07:30',
-      endTime: json['endTime'] ?? '09:00',
+      id: (json['id'] ?? '').toString(),
+      subjectName: (subjectMap?['name'] ??
+              json['subjectName'] ??
+              (json['subject'] is String ? json['subject'] : null) ??
+              'Pelajaran')
+          .toString(),
+      subjectCode:
+          (subjectMap?['code'] ?? json['subjectCode'] ?? '').toString(),
+      teacherName: resolvedTeacher.isEmpty ? 'Guru' : resolvedTeacher,
+      room: (json['room'] ?? 'Kelas').toString(),
+      dayOfWeek: (json['dayOfWeek'] as num?)?.toInt() ?? 1,
+      startTime: (json['startTime'] ?? '07:30').toString(),
+      endTime: (json['endTime'] ?? '09:00').toString(),
     );
   }
 }

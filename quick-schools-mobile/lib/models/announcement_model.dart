@@ -22,17 +22,36 @@ class AnnouncementModel {
   bool get isUrgent => priority == 'URGENT';
 
   factory AnnouncementModel.fromJson(Map<String, dynamic> json) {
+    final authorMap = json['author'] is Map ? json['author'] as Map : null;
+    String author = 'Tata Usaha / Kepala Sekolah';
+    if (authorMap != null) {
+      if (authorMap['name'] != null) {
+        author = authorMap['name'].toString();
+      } else {
+        author =
+            '${authorMap['firstName'] ?? ''} ${authorMap['lastName'] ?? ''}'
+                .trim();
+      }
+    } else if (json['authorName'] != null) {
+      author = json['authorName'].toString();
+    }
+
+    final isPinned = json['isPinned'] == true;
+    final priority =
+        (json['priority'] ?? (isPinned ? 'URGENT' : 'NORMAL')).toString();
+
     return AnnouncementModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      content: json['content'] ?? '',
-      targetRole: json['targetRole'],
-      priority: json['priority'] ?? 'NORMAL',
-      authorName: json['author'] != null
-          ? '${json['author']['firstName']} ${json['author']['lastName']}'
-          : json['authorName'] ?? 'Tata Usaha / Kepala Sekolah',
-      publishedAt: DateTime.tryParse(json['publishedAt'] ?? '') ?? DateTime.now(),
-      isPinned: json['isPinned'] ?? false,
+      id: (json['id'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      content: (json['content'] ?? '').toString(),
+      targetRole: json['targetRole']?.toString(),
+      priority: priority,
+      authorName: author.isEmpty ? 'Administrator Sekolah' : author,
+      publishedAt: DateTime.tryParse(
+            (json['publishedAt'] ?? json['createdAt'] ?? '').toString(),
+          ) ??
+          DateTime.now(),
+      isPinned: isPinned,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../constants/api_endpoints.dart';
 import '../storage/secure_storage.dart';
 
@@ -9,12 +10,22 @@ class ApiClient {
   late final Dio dio;
   final SecureStorageService _storage = SecureStorageService();
 
+  static String get _resolvedBaseUrl {
+    final envUrl = dotenv.isInitialized ? dotenv.maybeGet('API_BASE_URL') : null;
+    if (envUrl != null && envUrl.trim().isNotEmpty) {
+      return envUrl.trim();
+    }
+    return ApiEndpoints.defaultBaseUrl;
+  }
+
   ApiClient._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: ApiEndpoints.defaultBaseUrl,
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        baseUrl: _resolvedBaseUrl,
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 6),
+        followRedirects: false,
+        validateStatus: (status) => status != null && status < 400,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

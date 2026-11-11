@@ -34,4 +34,26 @@ class AppColors {
   static const Color textPrimaryDark = Color(0xFFF8FAFC);
   static const Color textSecondaryDark = Color(0xFF94A3B8);
   static const Color textMutedDark = Color(0xFF64748B);
+
+  // Theme-aware helpers
+  static bool isDark(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
+
+  static Color bg(BuildContext context) =>
+      isDark(context) ? backgroundDark : backgroundLight;
+
+  static Color surface(BuildContext context) =>
+      isDark(context) ? surfaceDark : surfaceLight;
+
+  static Color border(BuildContext context) =>
+      isDark(context) ? borderDark : borderLight;
+
+  static Color textPrimary(BuildContext context) =>
+      isDark(context) ? textPrimaryDark : textPrimaryLight;
+
+  static Color textSecondary(BuildContext context) =>
+      isDark(context) ? textSecondaryDark : textSecondaryLight;
+
+  static Color textMuted(BuildContext context) =>
+      isDark(context) ? textMutedDark : textMutedLight;
 }

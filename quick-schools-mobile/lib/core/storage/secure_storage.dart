@@ -14,18 +14,36 @@ class SecureStorageService {
   static const String _keyUserRole = 'user_role';
 
   Future<void> saveTokens({required String token, String? refreshToken}) async {
-    await _storage.write(key: _keyToken, value: token);
-    if (refreshToken != null) {
-      await _storage.write(key: _keyRefreshToken, value: refreshToken);
+    try {
+      await _storage.write(key: _keyToken, value: token);
+      if (refreshToken != null) {
+        await _storage.write(key: _keyRefreshToken, value: refreshToken);
+      }
+    } catch (_) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_keyToken, token);
+      if (refreshToken != null) {
+        await prefs.setString(_keyRefreshToken, refreshToken);
+      }
     }
   }
 
   Future<String?> getToken() async {
-    return await _storage.read(key: _keyToken);
+    try {
+      final val = await _storage.read(key: _keyToken);
+      if (val != null) return val;
+    } catch (_) {}
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyToken);
   }
 
   Future<String?> getRefreshToken() async {
-    return await _storage.read(key: _keyRefreshToken);
+    try {
+      final val = await _storage.read(key: _keyRefreshToken);
+      if (val != null) return val;
+    } catch (_) {}
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyRefreshToken);
   }
 
   Future<void> saveUserSession({required String userId, required String role}) async {

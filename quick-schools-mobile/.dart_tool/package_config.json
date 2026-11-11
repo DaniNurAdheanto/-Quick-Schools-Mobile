@@ -38,6 +38,36 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "camera",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/camera-0.12.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.12"
+    },
+    {
+      "name": "camera_android_camerax",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/camera_android_camerax-0.7.6+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.12"
+    },
+    {
+      "name": "camera_avfoundation",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/camera_avfoundation-0.11.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
+      "name": "camera_platform_interface",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/camera_platform_interface-2.15.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
+      "name": "camera_web",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/camera_web-0.3.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
       "name": "characters",
       "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/characters-1.4.1",
       "packageUri": "lib/",
@@ -68,10 +98,22 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "cross_file",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/cross_file-0.3.5+5",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    },
+    {
       "name": "crypto",
       "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/crypto-3.0.8",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "dbus",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/dbus-0.7.15",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "dio",
@@ -146,6 +188,12 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "flutter_plugin_android_lifecycle",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.35",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    },
+    {
       "name": "flutter_secure_storage",
       "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/flutter_secure_storage-9.2.4",
       "packageUri": "lib/",
@@ -200,10 +248,64 @@
       "languageVersion": "3.11"
     },
     {
+      "name": "geoclue",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geoclue-0.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
+      "name": "geolocator",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator-14.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_android",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator_android-5.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_apple",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator_apple-2.4.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_linux",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator_linux-0.2.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_platform_interface",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator_platform_interface-4.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_web",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator_web-4.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "geolocator_windows",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/geolocator_windows-0.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "google_fonts",
       "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/google_fonts-6.3.3",
       "packageUri": "lib/",
       "languageVersion": "3.9"
+    },
+    {
+      "name": "gsettings",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/gsettings-0.2.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "hooks",
@@ -336,6 +438,18 @@
       "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/package_config-3.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.11"
+    },
+    {
+      "name": "package_info_plus",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/package_info_plus-9.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "package_info_plus_platform_interface",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-3.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "path",
@@ -522,6 +636,12 @@
       "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/stream_channel-2.1.4",
       "packageUri": "lib/",
       "languageVersion": "3.3"
+    },
+    {
+      "name": "stream_transform",
+      "rootUri": "file:///Users/daninuradheanto/.pub-cache/hosted/pub.dev/stream_transform-2.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "string_scanner",

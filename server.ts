@@ -322,17 +322,77 @@ async function startServer() {
     });
   });
 
+  // Registration: POST /api/auth/register
+  app.post('/api/auth/register', (req: Request, res: Response) => {
+    const { firstName, lastName, email, role, identifierNumber } = req.body || {};
+
+    if (!email || !firstName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Nama depan dan email wajib diisi.',
+      });
+    }
+
+    const existing = DB.users.find(
+      (u) => u.email.toLowerCase() === String(email).toLowerCase(),
+    );
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        message: 'Email sudah terdaftar. Silakan masuk.',
+      });
+    }
+
+    const normalizedRole = ['ADMIN', 'TEACHER', 'STUDENT', 'PARENT'].includes(
+      String(role || '').toUpperCase(),
+    )
+      ? String(role).toUpperCase()
+      : 'STUDENT';
+
+    const defaultClassByRole: Record<string, string> = {
+      STUDENT: 'X MIPA 1',
+      TEACHER: 'Tenaga Pengajar',
+      PARENT: 'Wali Murid',
+      ADMIN: 'Administrator Sekolah',
+    };
+
+    const newUser = {
+      id: `usr-${normalizedRole.toLowerCase()}-${Date.now()}`,
+      email: String(email).trim(),
+      role: normalizedRole,
+      firstName: String(firstName).trim(),
+      lastName: String(lastName || '').trim(),
+      phoneNumber: '',
+      identifierNumber: identifierNumber ? String(identifierNumber).trim() : '',
+      schoolName: 'SMA Quick Schools Unggulan',
+      className: defaultClassByRole[normalizedRole] || 'X MIPA 1',
+      isActive: true,
+    };
+
+    DB.users.push(newUser);
+
+    return res.status(201).json({
+      success: true,
+      token: `jwt_token_${newUser.id}_${Date.now()}`,
+      refreshToken: `jwt_refresh_${newUser.id}_${Date.now()}`,
+      user: newUser,
+    });
+  });
+
   // Session: GET /api/auth/me
   app.get('/api/auth/me', (req: Request, res: Response) => {
-    const authHeader = req.headers.authorization;
-    let user = DB.users[2]; // default student
+    const authHeader = req.headers.authorization || '';
+    const matchedUser = DB.users.find((u) => authHeader.includes(u.id));
+    let user = matchedUser || DB.users[2]; // default student
 
-    if (authHeader && authHeader.includes('usr-teacher')) {
-      user = DB.users[1];
-    } else if (authHeader && authHeader.includes('usr-parent')) {
-      user = DB.users[3];
-    } else if (authHeader && authHeader.includes('usr-admin')) {
-      user = DB.users[0];
+    if (!matchedUser) {
+      if (authHeader.includes('usr-teacher')) {
+        user = DB.users[1];
+      } else if (authHeader.includes('usr-parent')) {
+        user = DB.users[3];
+      } else if (authHeader.includes('usr-admin')) {
+        user = DB.users[0];
+      }
     }
 
     res.json({

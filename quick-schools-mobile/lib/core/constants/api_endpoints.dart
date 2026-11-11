@@ -5,6 +5,7 @@ class ApiEndpoints {
   
   // Authentication & Session
   static const String login = '/auth/login';
+  static const String register = '/auth/register';
   static const String logout = '/auth/logout';
   static const String me = '/auth/me';
   static const String refreshToken = '/auth/refresh';
@@ -17,7 +18,7 @@ class ApiEndpoints {
   static const String subjects = '/subjects';
   static const String schedules = '/schedules';
   static const String attendance = '/attendance';
-  static const String markAttendance = '/attendance/mark';
+  static const String markAttendance = '/attendance';
   static const String grades = '/grades';
   static const String announcements = '/announcements';
   static const String notifications = '/notifications';

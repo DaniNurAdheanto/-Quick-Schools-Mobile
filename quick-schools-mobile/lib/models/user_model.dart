@@ -5,15 +5,21 @@ enum UserRole {
   parent;
 
   static UserRole fromString(String role) {
-    switch (role.toUpperCase()) {
+    final normalized = role.toUpperCase().replaceAll('-', '_');
+    switch (normalized) {
       case 'ADMIN':
+      case 'SUPER_ADMIN':
+      case 'SAAS_ADMIN':
         return UserRole.admin;
       case 'TEACHER':
+      case 'GURU':
+      case 'KEPALA_SEKOLAH':
         return UserRole.teacher;
-      case 'STUDENT':
-        return UserRole.student;
       case 'PARENT':
+      case 'ORANG_TUA':
         return UserRole.parent;
+      case 'STUDENT':
+      case 'SISWA':
       default:
         return UserRole.student;
     }
@@ -44,6 +50,19 @@ enum UserRole {
         return 'PARENT';
     }
   }
+
+  String toIndonesianApiRole() {
+    switch (this) {
+      case UserRole.admin:
+        return 'admin';
+      case UserRole.teacher:
+        return 'guru';
+      case UserRole.student:
+        return 'siswa';
+      case UserRole.parent:
+        return 'orang-tua';
+    }
+  }
 }
 
 class UserModel {
@@ -57,6 +76,10 @@ class UserModel {
   final String? schoolName;
   final String? identifierNumber; // NISN for student, NIP for teacher
   final String? className;
+  final String? studentId;
+  final String? teacherId;
+  final String? parentId;
+  final String? classId;
 
   UserModel({
     required this.id,
@@ -69,22 +92,59 @@ class UserModel {
     this.schoolName,
     this.identifierNumber,
     this.className,
+    this.studentId,
+    this.teacherId,
+    this.parentId,
+    this.classId,
   });
 
   String get fullName => '$firstName $lastName'.trim();
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    String first = (json['firstName'] ?? '').toString().trim();
+    String last = (json['lastName'] ?? '').toString().trim();
+
+    if (first.isEmpty) {
+      final rawName =
+          (json['fullName'] ?? json['name'] ?? 'Pengguna').toString().trim();
+      final parts = rawName.split(RegExp(r'\s+'));
+      first = parts.isNotEmpty ? parts.first : rawName;
+      last = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    }
+
+    final schoolMap = json['school'] is Map ? json['school'] as Map : null;
+    final classMap =
+        json['classRoom'] is Map ? json['classRoom'] as Map : null;
+    final rawPhone = json['phoneNumber'] ?? json['phone'];
+    final cleanPhone =
+        (rawPhone != null && rawPhone.toString().trim() != '-')
+            ? rawPhone.toString().trim()
+            : null;
+
     return UserModel(
-      id: json['id'] ?? '',
-      email: json['email'] ?? '',
-      firstName: json['firstName'] ?? '',
-      lastName: json['lastName'] ?? '',
-      role: UserRole.fromString(json['role'] ?? 'STUDENT'),
-      phoneNumber: json['phoneNumber'],
-      avatarUrl: json['avatarUrl'],
-      schoolName: json['school']?['name'] ?? json['schoolName'] ?? 'SMA Quick Schools Unggulan',
-      identifierNumber: json['identifierNumber'] ?? json['nisn'] ?? json['nip'],
-      className: json['classRoom']?['name'] ?? json['className'],
+      id: (json['id'] ?? '').toString(),
+      email: (json['email'] ?? '').toString(),
+      firstName: first,
+      lastName: last,
+      role: UserRole.fromString((json['rawRole'] ?? json['role'] ?? 'STUDENT').toString()),
+      phoneNumber: cleanPhone,
+      avatarUrl: json['avatarUrl']?.toString(),
+      schoolName: (schoolMap?['name'] ??
+              json['schoolName'] ??
+              'SMA Quick Schools Unggulan')
+          .toString(),
+      identifierNumber:
+          (json['identifierNumber'] ?? json['nisn'] ?? json['nip'] ?? json['nis'])
+              ?.toString(),
+      className: (classMap?['name'] ??
+              json['className'] ??
+              json['homeroomClass'] ??
+              json['childClass'])
+          ?.toString(),
+      studentId: json['studentId']?.toString(),
+      teacherId: json['teacherId']?.toString(),
+      parentId: json['parentId']?.toString(),
+      classId: json['classId']?.toString(),
     );
   }
 
@@ -100,6 +160,10 @@ class UserModel {
       'schoolName': schoolName,
       'identifierNumber': identifierNumber,
       'className': className,
+      'studentId': studentId,
+      'teacherId': teacherId,
+      'parentId': parentId,
+      'classId': classId,
     };
   }
 }
