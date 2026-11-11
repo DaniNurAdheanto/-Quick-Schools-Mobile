@@ -25,7 +25,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final academic = Provider.of<AcademicProvider>(context);
-    final daySchedules = academic.schedules.where((s) => s.dayOfWeek == _selectedDay).toList();
+    final daySchedules =
+        academic.schedules.where((s) => s.dayOfWeek == _selectedDay).toList();
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -51,11 +52,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       selectedColor: AppColors.primary,
                       backgroundColor: AppColors.backgroundLight,
                       labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textSecondaryLight,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected
+                            ? Colors.white
+                            : AppColors.textSecondaryLight,
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
                         fontSize: 13,
                       ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       onSelected: (val) {
                         if (val) setState(() => _selectedDay = item['day']);
                       },
@@ -74,13 +79,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   Container(
                     padding: const EdgeInsets.all(32),
                     alignment: Alignment.center,
-                    child: Column(
-                      children: const [
-                        Icon(Icons.event_busy_rounded, size: 48, color: AppColors.textMutedLight),
+                    child: const Column(
+                      children: [
+                        Icon(Icons.event_busy_rounded,
+                            size: 48, color: AppColors.textMutedLight),
                         SizedBox(height: 12),
                         Text(
                           'Tidak ada kelas terjadwal untuk hari ini.',
-                          style: TextStyle(color: AppColors.textSecondaryLight, fontSize: 13),
+                          style: TextStyle(
+                              color: AppColors.textSecondaryLight,
+                              fontSize: 13),
                         ),
                       ],
                     ),
@@ -111,7 +119,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primarySubtle,
                   borderRadius: BorderRadius.circular(6),
@@ -127,7 +136,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               ),
               Row(
                 children: [
-                  const Icon(Icons.access_time_rounded, size: 14, color: AppColors.textMutedLight),
+                  const Icon(Icons.access_time_rounded,
+                      size: 14, color: AppColors.textMutedLight),
                   const SizedBox(width: 4),
                   Text(
                     '${item.startTime} - ${item.endTime}',
@@ -153,12 +163,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           const SizedBox(height: 8),
           Row(
             children: [
-              const Icon(Icons.person_pin_rounded, size: 16, color: AppColors.primary),
+              const Icon(Icons.person_pin_rounded,
+                  size: 16, color: AppColors.primary),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   item.teacherName,
-                  style: const TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
+                  style: const TextStyle(
+                      fontSize: 13, color: AppColors.textSecondaryLight),
                 ),
               ),
               Container(

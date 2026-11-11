@@ -16,7 +16,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController(text: 'raditya.pratama@quickschools.sch.id');
+  final _emailController =
+      TextEditingController(text: 'raditya.pratama@quickschools.sch.id');
   final _passwordController = TextEditingController(text: 'password123');
   bool _obscurePassword = true;
 
@@ -29,7 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onLoginSuccess() {
     Provider.of<AttendanceProvider>(context, listen: false).fetchAttendance();
-    Provider.of<AcademicProvider>(context, listen: false).fetchAllAcademicData();
+    Provider.of<AcademicProvider>(context, listen: false)
+        .fetchAllAcademicData();
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const DashboardScreen()),
@@ -76,13 +78,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
                   ],
                 ),
-                child: const Icon(Icons.school_rounded, color: Colors.white, size: 30),
+                child: const Icon(Icons.school_rounded,
+                    color: Colors.white, size: 30),
               ),
               const SizedBox(height: 24),
               const Text(
@@ -111,16 +114,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.dangerLight,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.danger.withOpacity(0.3)),
+                    border: Border.all(
+                        color: AppColors.danger.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: AppColors.danger, size: 20),
+                      const Icon(Icons.error_outline,
+                          color: AppColors.danger, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           auth.errorMessage!,
-                          style: const TextStyle(color: AppColors.danger, fontSize: 13),
+                          style: const TextStyle(
+                              color: AppColors.danger, fontSize: 13),
                         ),
                       ),
                     ],
@@ -144,7 +150,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: 'nama@quickschools.sch.id',
-                  prefixIcon: Icon(Icons.mail_outline_rounded, size: 20, color: AppColors.textSecondaryLight),
+                  prefixIcon: Icon(Icons.mail_outline_rounded,
+                      size: 20, color: AppColors.textSecondaryLight),
                 ),
               ),
               const SizedBox(height: 18),
@@ -164,14 +171,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   hintText: '••••••••',
-                  prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20, color: AppColors.textSecondaryLight),
+                  prefixIcon: const Icon(Icons.lock_outline_rounded,
+                      size: 20, color: AppColors.textSecondaryLight),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       size: 20,
                       color: AppColors.textSecondaryLight,
                     ),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),
               ),
@@ -250,7 +261,8 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: BoxDecoration(
           color: AppColors.primarySubtle,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.primaryLight.withOpacity(0.3)),
+          border:
+              Border.all(color: AppColors.primaryLight.withValues(alpha: 0.3)),
         ),
         child: Column(
           children: [
@@ -266,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
               subtitle,
               style: TextStyle(
                 fontSize: 10,
-                color: AppColors.primary.withOpacity(0.7),
+                color: AppColors.primary.withValues(alpha: 0.7),
               ),
             ),
           ],

@@ -45,19 +45,22 @@ class ProfileScreen extends StatelessWidget {
                     label: 'Peran Akses (RBAC)',
                     value: user.role.displayName,
                   ),
-                  const Divider(height: 1, indent: 56, color: AppColors.borderLight),
+                  const Divider(
+                      height: 1, indent: 56, color: AppColors.borderLight),
                   _buildListTile(
                     icon: Icons.email_outlined,
                     label: 'Email Terdaftar',
                     value: user.email,
                   ),
-                  const Divider(height: 1, indent: 56, color: AppColors.borderLight),
+                  const Divider(
+                      height: 1, indent: 56, color: AppColors.borderLight),
                   _buildListTile(
                     icon: Icons.phone_outlined,
                     label: 'Nomor WhatsApp / HP',
                     value: user.phoneNumber ?? '+62 812-XXXX-XXXX',
                   ),
-                  const Divider(height: 1, indent: 56, color: AppColors.borderLight),
+                  const Divider(
+                      height: 1, indent: 56, color: AppColors.borderLight),
                   _buildListTile(
                     icon: Icons.dns_outlined,
                     label: 'Status Integrasi',
@@ -82,14 +85,16 @@ class ProfileScreen extends StatelessWidget {
                 side: const BorderSide(color: AppColors.danger, width: 1.5),
                 foregroundColor: AppColors.danger,
                 minimumSize: const Size.fromHeight(48),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.logout_rounded, size: 18),
                   SizedBox(width: 8),
-                  Text('Keluar dari Akun', style: TextStyle(fontWeight: FontWeight.w600)),
+                  Text('Keluar dari Akun',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                 ],
               ),
             ),
@@ -124,7 +129,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.35),
+            color: AppColors.primary.withValues(alpha: 0.35),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -136,8 +141,8 @@ class ProfileScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(Icons.school, color: Colors.white, size: 20),
                   SizedBox(width: 8),
                   Text(
@@ -154,7 +159,7 @@ class ProfileScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -173,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: Colors.white.withOpacity(0.25),
+                backgroundColor: Colors.white.withValues(alpha: 0.25),
                 child: Text(
                   user.firstName.isNotEmpty ? user.firstName[0] : 'U',
                   style: const TextStyle(
@@ -223,9 +228,9 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(color: Colors.white24, height: 1),
           const SizedBox(height: 12),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Terverifikasi Database Quick Schools',
                 style: TextStyle(color: Colors.white70, fontSize: 11),

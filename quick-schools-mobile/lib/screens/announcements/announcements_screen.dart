@@ -36,7 +36,9 @@ class AnnouncementsScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: item.isUrgent ? AppColors.danger.withOpacity(0.4) : AppColors.borderLight,
+          color: item.isUrgent
+              ? AppColors.danger.withValues(alpha: 0.4)
+              : AppColors.borderLight,
         ),
       ),
       child: Column(
@@ -47,7 +49,8 @@ class AnnouncementsScreen extends StatelessWidget {
               if (item.isUrgent)
                 Container(
                   margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.dangerLight,
                     borderRadius: BorderRadius.circular(6),

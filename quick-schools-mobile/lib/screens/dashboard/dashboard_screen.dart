@@ -63,8 +63,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           elevation: 0,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11),
-          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
+          selectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.w700, fontSize: 11),
+          unselectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
@@ -123,7 +125,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppColors.primarySubtle,
                               borderRadius: BorderRadius.circular(6),
@@ -164,12 +167,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 IconButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const AnnouncementsScreen()),
+                      MaterialPageRoute(
+                          builder: (_) => const AnnouncementsScreen()),
                     );
                   },
                   icon: Stack(
                     children: [
-                      const Icon(Icons.notifications_none_rounded, size: 26, color: AppColors.textPrimaryLight),
+                      const Icon(Icons.notifications_none_rounded,
+                          size: 26, color: AppColors.textPrimaryLight),
                       Positioned(
                         right: 2,
                         top: 2,
@@ -201,7 +206,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   child: QuickStatTile(
                     label: 'Kehadiran',
-                    value: '${attendance.attendancePercentage.toStringAsFixed(1)}%',
+                    value:
+                        '${attendance.attendancePercentage.toStringAsFixed(1)}%',
                     icon: Icons.check_circle_outline_rounded,
                     color: AppColors.success,
                     subtitle: '${attendance.presentCount}x Hadir Semester Ini',
@@ -271,7 +277,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const AnnouncementsScreen()),
+                      MaterialPageRoute(
+                          builder: (_) => const AnnouncementsScreen()),
                     );
                   },
                   child: const Text(
@@ -288,7 +295,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 8),
 
             if (academic.announcements.isNotEmpty)
-              ...academic.announcements.take(2).map((ann) => _buildAnnouncementCard(ann)),
+              ...academic.announcements
+                  .take(2)
+                  .map((ann) => _buildAnnouncementCard(ann)),
           ],
         ),
       ),
@@ -308,7 +317,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -355,9 +364,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Row(
@@ -366,7 +376,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     SizedBox(width: 6),
                     Text(
                       'Terkoneksi Backend Next.js',
-                      style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -436,21 +449,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.person_outline, size: 14, color: AppColors.textMutedLight),
+                    const Icon(Icons.person_outline,
+                        size: 14, color: AppColors.textMutedLight),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         item.teacherName,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textSecondaryLight),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Icon(Icons.room_outlined, size: 14, color: AppColors.textMutedLight),
+                    const Icon(Icons.room_outlined,
+                        size: 14, color: AppColors.textMutedLight),
                     const SizedBox(width: 4),
                     Text(
                       item.room,
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textSecondaryLight),
                     ),
                   ],
                 ),

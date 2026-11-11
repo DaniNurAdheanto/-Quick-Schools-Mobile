@@ -51,10 +51,10 @@ class GradesScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           'Rata-rata Semester Ganjil',
                           style: TextStyle(
@@ -130,7 +130,8 @@ class GradesScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primarySubtle,
                   borderRadius: BorderRadius.circular(6),
@@ -172,11 +173,13 @@ class GradesScreen extends StatelessWidget {
             children: [
               Text(
                 'Kategori: ${grade.type}',
-                style: const TextStyle(fontSize: 11, color: AppColors.textMutedLight),
+                style: const TextStyle(
+                    fontSize: 11, color: AppColors.textMutedLight),
               ),
               Text(
                 DateFormat('dd MMM yyyy').format(grade.gradedAt),
-                style: const TextStyle(fontSize: 11, color: AppColors.textMutedLight),
+                style: const TextStyle(
+                    fontSize: 11, color: AppColors.textMutedLight),
               ),
             ],
           ),

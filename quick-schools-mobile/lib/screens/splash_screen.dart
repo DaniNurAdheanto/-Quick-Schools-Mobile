@@ -14,7 +14,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
 
@@ -44,7 +45,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (isAuthenticated) {
       // Pre-warm data
       Provider.of<AttendanceProvider>(context, listen: false).fetchAttendance();
-      Provider.of<AcademicProvider>(context, listen: false).fetchAllAcademicData();
+      Provider.of<AcademicProvider>(context, listen: false)
+          .fetchAllAcademicData();
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const DashboardScreen()),
@@ -81,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.35),
+                      color: AppColors.primary.withValues(alpha: 0.35),
                       blurRadius: 24,
                       offset: const Offset(0, 10),
                     ),
