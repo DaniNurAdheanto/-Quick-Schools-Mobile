@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/academic_provider.dart';
-import '../../models/schedule_model.dart';
+import '../../models/grade_model.dart';
 import '../../core/constants/app_colors.dart';
 
 class ScheduleScreen extends StatefulWidget {

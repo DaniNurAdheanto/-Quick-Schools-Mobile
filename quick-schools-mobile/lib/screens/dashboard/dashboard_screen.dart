@@ -6,7 +6,7 @@ import '../../providers/academic_provider.dart';
 import '../../models/user_model.dart';
 import '../../models/attendance_model.dart';
 import '../../core/constants/app_colors.dart';
-import '../../widgets/quick_stat_tile.dart';
+import '../../widgets/status_badge.dart';
 import '../attendance/attendance_screen.dart';
 import '../schedule/schedule_screen.dart';
 import '../grades/grades_screen.dart';
