@@ -23,18 +23,28 @@ class AttendanceProvider with ChangeNotifier {
       _attendances.where((a) => a.status == AttendanceStatus.late).length;
   int get excusedCount =>
       _attendances.where((a) => a.status == AttendanceStatus.excused).length;
+  int get permissionCount => _attendances
+      .where((a) =>
+          a.status == AttendanceStatus.excused &&
+          !(a.notes?.toLowerCase().contains('sakit') == true ||
+              a.notes?.toLowerCase().contains('dokter') == true))
+      .length;
+  int get sickCount => _attendances
+      .where((a) =>
+          a.status == AttendanceStatus.excused &&
+          (a.notes?.toLowerCase().contains('sakit') == true ||
+              a.notes?.toLowerCase().contains('dokter') == true))
+      .length;
   int get absentCount =>
       _attendances.where((a) => a.status == AttendanceStatus.absent).length;
 
   double get attendancePercentage {
     if (_attendances.isEmpty) return 96.5;
-    final total = _attendances.length;
-    final attended = _attendances
-        .where((a) =>
-            a.status == AttendanceStatus.present ||
-            a.status == AttendanceStatus.late)
-        .length;
-    return (attended / total) * 100;
+    // Calculate based on standard semester effective days (approx 90 days)
+    const effectiveSemesterDays = 90;
+    final deductions = absentCount * 1.0 + (lateCount * 0.2);
+    final rate = ((effectiveSemesterDays - deductions) / effectiveSemesterDays) * 100;
+    return rate.clamp(60.0, 100.0);
   }
 
   Future<void> fetchAttendance({String? studentId}) async {
@@ -215,9 +225,82 @@ class AttendanceProvider with ChangeNotifier {
         studentName: 'Raditya Pratama',
         className: 'X MIPA 1',
         date: DateTime.now().subtract(const Duration(days: 5)),
-        status: AttendanceStatus.excused,
-        checkInTime: null,
-        notes: 'Surat dokter: Sakit Demam',
+        status: AttendanceStatus.late,
+        checkInTime: '07:20 WIB',
+        notes: 'Terlambat 20 menit (Macet jalan raya)',
+      ),
+      // 8 Catatan Alpa (Absent)
+      AttendanceModel(
+        id: 'att-6',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 6)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-7',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 7)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-8',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 8)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-9',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 9)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-10',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 10)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-11',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 11)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-12',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 12)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
+      ),
+      AttendanceModel(
+        id: 'att-13',
+        studentId: 's-202',
+        studentName: 'Raditya Pratama',
+        className: 'X MIPA 1',
+        date: DateTime.now().subtract(const Duration(days: 13)),
+        status: AttendanceStatus.absent,
+        notes: 'Tanpa Keterangan',
       ),
     ];
   }

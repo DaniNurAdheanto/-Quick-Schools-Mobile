@@ -66,6 +66,7 @@ class AcademicProvider with ChangeNotifier {
 
   void _loadDemoSchedules() {
     _schedules = [
+      // Senin (Day 1)
       ScheduleModel(
         id: 'sch-1',
         subjectName: 'Matematika Peminatan',
@@ -73,8 +74,8 @@ class AcademicProvider with ChangeNotifier {
         teacherName: 'Budi Santoso, M.Pd.',
         room: 'Ruang 101',
         dayOfWeek: 1, // Senin
-        startTime: '07:30',
-        endTime: '09:00',
+        startTime: '07:15',
+        endTime: '08:45',
       ),
       ScheduleModel(
         id: 'sch-2',
@@ -83,38 +84,176 @@ class AcademicProvider with ChangeNotifier {
         teacherName: 'Ir. Dewi Sartika, M.T.',
         room: 'Lab Fisika Lt. 2',
         dayOfWeek: 1, // Senin
-        startTime: '09:15',
-        endTime: '11:00',
+        startTime: '08:45',
+        endTime: '10:30',
       ),
       ScheduleModel(
         id: 'sch-3',
+        subjectName: 'Bahasa Indonesia & Literasi',
+        subjectCode: 'IND-201',
+        teacherName: 'Dra. Endang Sulastri',
+        room: 'Ruang 101',
+        dayOfWeek: 1, // Senin
+        startTime: '10:45',
+        endTime: '12:15',
+      ),
+      ScheduleModel(
+        id: 'sch-4',
+        subjectName: 'Kimia Terapan',
+        subjectCode: 'CHM-301',
+        teacherName: 'Dr. Ahmad Fauzi',
+        room: 'Lab Kimia',
+        dayOfWeek: 1, // Senin
+        startTime: '13:00',
+        endTime: '14:30',
+      ),
+      ScheduleModel(
+        id: 'sch-5',
+        subjectName: 'Pendidikan Jasmani & Olahraga',
+        subjectCode: 'PJO-101',
+        teacherName: 'Coach Hadi Wijaya, S.Pd.',
+        room: 'Gelanggang Olahraga',
+        dayOfWeek: 1, // Senin
+        startTime: '14:30',
+        endTime: '15:45',
+      ),
+
+      // Selasa (Day 2)
+      ScheduleModel(
+        id: 'sch-6',
         subjectName: 'Bahasa Inggris Lanjutan',
         subjectCode: 'ENG-102',
         teacherName: 'Sarah Jenkins, B.Ed.',
         room: 'Lab Bahasa',
         dayOfWeek: 2, // Selasa
-        startTime: '07:30',
-        endTime: '09:00',
+        startTime: '07:15',
+        endTime: '08:45',
       ),
       ScheduleModel(
-        id: 'sch-4',
+        id: 'sch-7',
+        subjectName: 'Biologi Molekuler',
+        subjectCode: 'BIO-201',
+        teacherName: 'Siti Rahmawati, M.Si.',
+        room: 'Lab Biologi',
+        dayOfWeek: 2, // Selasa
+        startTime: '09:00',
+        endTime: '10:30',
+      ),
+      ScheduleModel(
+        id: 'sch-8',
         subjectName: 'Kimia Organik',
         subjectCode: 'CHM-201',
         teacherName: 'Dr. Ahmad Fauzi',
         room: 'Lab Kimia',
         dayOfWeek: 2, // Selasa
-        startTime: '10:00',
-        endTime: '11:45',
+        startTime: '10:45',
+        endTime: '12:15',
       ),
       ScheduleModel(
-        id: 'sch-5',
+        id: 'sch-9',
+        subjectName: 'Sejarah Indonesia',
+        subjectCode: 'HIS-101',
+        teacherName: 'Bambang Sudibyo, S.Pd.',
+        room: 'Ruang 102',
+        dayOfWeek: 2, // Selasa
+        startTime: '13:00',
+        endTime: '14:30',
+      ),
+
+      // Rabu (Day 3)
+      ScheduleModel(
+        id: 'sch-10',
         subjectName: 'Informatika & Pemrograman',
         subjectCode: 'INF-101',
         teacherName: 'Doni Prasetyo, S.Kom.',
         room: 'Lab Komputer A',
         dayOfWeek: 3, // Rabu
-        startTime: '08:00',
+        startTime: '07:30',
+        endTime: '09:45',
+      ),
+      ScheduleModel(
+        id: 'sch-11',
+        subjectName: 'Seni Budaya & Desain',
+        subjectCode: 'ART-101',
+        teacherName: 'Maya Kusuma, S.Sn.',
+        room: 'Studio Seni',
+        dayOfWeek: 3, // Rabu
+        startTime: '10:00',
+        endTime: '11:30',
+      ),
+      ScheduleModel(
+        id: 'sch-12',
+        subjectName: 'Pendidikan Agama & Budi Pekerti',
+        subjectCode: 'REL-101',
+        teacherName: 'Ust. H. Ridwan Kamil, M.Ag.',
+        room: 'Masjid Kampus',
+        dayOfWeek: 3, // Rabu
+        startTime: '12:45',
+        endTime: '14:15',
+      ),
+
+      // Kamis (Day 4)
+      ScheduleModel(
+        id: 'sch-13',
+        subjectName: 'Geografi & Kebumian',
+        subjectCode: 'GEO-201',
+        teacherName: 'Drs. Yulianto, M.Pd.',
+        room: 'Ruang 103',
+        dayOfWeek: 4, // Kamis
+        startTime: '07:15',
+        endTime: '09:00',
+      ),
+      ScheduleModel(
+        id: 'sch-14',
+        subjectName: 'Ekonomi & Akuntansi',
+        subjectCode: 'ECO-201',
+        teacherName: 'Sri Wahyuni, S.E., M.M.',
+        room: 'Ruang 103',
+        dayOfWeek: 4, // Kamis
+        startTime: '09:15',
+        endTime: '11:00',
+      ),
+      ScheduleModel(
+        id: 'sch-15',
+        subjectName: 'Sosiologi Terapan',
+        subjectCode: 'SOC-101',
+        teacherName: 'Rina Kuswardani, M.Sos.',
+        room: 'Ruang 103',
+        dayOfWeek: 4, // Kamis
+        startTime: '11:15',
+        endTime: '12:45',
+      ),
+
+      // Jumat (Day 5)
+      ScheduleModel(
+        id: 'sch-16',
+        subjectName: 'Pendidikan Pancasila & PPKn',
+        subjectCode: 'PPKN-101',
+        teacherName: 'Supriyanto, S.Pd., M.H.',
+        room: 'Ruang 101',
+        dayOfWeek: 5, // Jumat
+        startTime: '07:00',
+        endTime: '08:30',
+      ),
+      ScheduleModel(
+        id: 'sch-17',
+        subjectName: 'Matematika Terapan & Statistika',
+        subjectCode: 'MTH-302',
+        teacherName: 'Budi Santoso, M.Pd.',
+        room: 'Ruang 101',
+        dayOfWeek: 5, // Jumat
+        startTime: '08:45',
         endTime: '10:15',
+      ),
+      ScheduleModel(
+        id: 'sch-18',
+        subjectName: 'Proyek Penguatan Karakter P5',
+        subjectCode: 'P5-101',
+        teacherName: 'Tim Fasilitator P5',
+        room: 'Aula Serbaguna',
+        dayOfWeek: 5, // Jumat
+        startTime: '10:30',
+        endTime: '11:30',
       ),
     ];
   }
@@ -191,6 +330,22 @@ class AcademicProvider with ChangeNotifier {
         priority: 'NORMAL',
         authorName: 'Hubungan Masyarakat (Humas)',
         publishedAt: DateTime.now().subtract(const Duration(days: 4)),
+      ),
+      AnnouncementModel(
+        id: 'ann-4',
+        title: 'Penyerahan E-Rapor Digital Semester Ganjil',
+        content: 'E-Rapor hasil belajar semester ganjil dapat diakses secara digital melalui menu Rapot Digital pada aplikasi mulai Jumat, 18 Desember 2026.',
+        priority: 'URGENT',
+        authorName: 'Wali Kelas & Bagian Kurikulum',
+        publishedAt: DateTime.now().subtract(const Duration(days: 5)),
+      ),
+      AnnouncementModel(
+        id: 'ann-5',
+        title: 'Kalender Libur Semester Ganjil & Masuk Semester Genap',
+        content: 'Libur semester ganjil berlangsung tanggal 21 Desember 2026 s/d 2 Januari 2027. Pembelajaran semester genap aktif kembali hari Senin, 4 Januari 2027.',
+        priority: 'NORMAL',
+        authorName: 'Tata Usaha Sekolah',
+        publishedAt: DateTime.now().subtract(const Duration(days: 6)),
       ),
     ];
   }

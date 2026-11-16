@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/attendance_model.dart';
 import '../../providers/attendance_provider.dart';
-import '../../providers/auth_provider.dart';
 import '../../widgets/status_badge.dart';
 import 'face_attendance_screen.dart';
+import 'leave_request_screen.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -40,177 +40,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       MaterialPageRoute(
         builder: (_) => const FaceAttendanceScreen(),
       ),
-    );
-  }
-
-  Future<void> _submitLeaveRequest({
-    required AttendanceStatus status,
-    required String notes,
-  }) async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    final attendance = Provider.of<AttendanceProvider>(context, listen: false);
-    final user = auth.currentUser;
-
-    final ok = await attendance.markQuickAttendance(
-      studentId: user?.studentId ?? user?.id ?? 's-202',
-      studentName: user?.fullName,
-      className: user?.className,
-      status: status,
-      notes: notes,
-    );
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            ok
-                ? 'Pengajuan ${status.label} berhasil dicatat!'
-                : 'Gagal mengirim pengajuan. Coba lagi.',
-          ),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: ok ? AppColors.success : AppColors.danger,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-    }
-  }
-
-  void _showLeaveSheet() {
-    AttendanceStatus selectedStatus = AttendanceStatus.excused;
-    final notesController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (ctx, setSheetState) {
-            return Padding(
-              padding: EdgeInsets.fromLTRB(
-                24,
-                16,
-                24,
-                MediaQuery.of(ctx).viewInsets.bottom + 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.border(ctx),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  Text(
-                    'Ajukan Izin / Sakit',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary(ctx),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    DateFormat('EEEE, d MMMM yyyy', 'id_ID')
-                        .format(DateTime.now()),
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: AppColors.textSecondary(ctx),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ChoiceChip(
-                          label: const Center(child: Text('Izin / Sakit')),
-                          selected: selectedStatus == AttendanceStatus.excused,
-                          selectedColor: AppColors.primary,
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: selectedStatus == AttendanceStatus.excused
-                                ? Colors.white
-                                : AppColors.textSecondary(ctx),
-                          ),
-                          onSelected: (_) => setSheetState(
-                            () => selectedStatus = AttendanceStatus.excused,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ChoiceChip(
-                          label: const Center(child: Text('Terlambat')),
-                          selected: selectedStatus == AttendanceStatus.late,
-                          selectedColor: AppColors.warning,
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: selectedStatus == AttendanceStatus.late
-                                ? Colors.white
-                                : AppColors.textSecondary(ctx),
-                          ),
-                          onSelected: (_) => setSheetState(
-                            () => selectedStatus = AttendanceStatus.late,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  TextField(
-                    controller: notesController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: 'Alasan / Keterangan',
-                      hintText: 'Contoh: Sakit demam / Urusan keluarga',
-                      filled: true,
-                      fillColor: AppColors.bg(ctx),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      final notes = notesController.text.trim();
-                      Navigator.pop(ctx);
-                      _submitLeaveRequest(
-                        status: selectedStatus,
-                        notes: notes.isEmpty
-                            ? 'Pengajuan ${selectedStatus.label} siswa'
-                            : notes,
-                      );
-                    },
-                    icon: const Icon(Icons.send_rounded, size: 18),
-                    label: const Text('Kirim Keterangan'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
     );
   }
 
@@ -450,11 +279,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             ),
                             const SizedBox(width: 10),
                             ElevatedButton.icon(
-                              onPressed: _showLeaveSheet,
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const LeaveRequestScreen(),
+                                  ),
+                                );
+                              },
                               icon:
                                   const Icon(Icons.edit_note_rounded, size: 20),
                               label: const Text(
-                                'Izin',
+                                'Izin / Sakit',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 13,

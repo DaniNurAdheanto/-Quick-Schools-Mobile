@@ -138,6 +138,23 @@ export function MobileSimulator({ onDataChanged }: MobileSimulatorProps) {
 
   const currentUser = userProfiles[selectedRole];
 
+  // Daily attendance status & metrics
+  const todayStr = '2026-11-16';
+  const todayRecord = attendances.find((a) => a.date === todayStr);
+  const hasCheckedInToday = Boolean(todayRecord);
+
+  const attendanceStats = {
+    present: attendances.filter((a) => a.status === 'PRESENT').length,
+    late: attendances.filter((a) => a.status === 'LATE').length,
+    permission: attendances.filter(
+      (a) => a.status === 'EXCUSED' && !a.notes?.toLowerCase().includes('sakit')
+    ).length,
+    sick: attendances.filter(
+      (a) => a.status === 'EXCUSED' && a.notes?.toLowerCase().includes('sakit')
+    ).length,
+    absent: attendances.filter((a) => a.status === 'ABSENT').length,
+  };
+
   return (
     <div className="flex flex-col items-center">
       {/* Device Controls Header */}
@@ -346,6 +363,75 @@ export function MobileSimulator({ onDataChanged }: MobileSimulatorProps) {
                       <div className="pt-3 border-t border-white/20 flex items-center justify-between text-[11px]">
                         <span className="text-white/90 font-medium">{currentUser.roleTitle}</span>
                         <span className="text-white/70">Semester Ganjil</span>
+                      </div>
+                    </div>
+
+                    {/* Section: Presensi Kehadiran Siswa */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm">
+                      {/* Header: Icon + Title & Date */}
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-5 h-5 text-[#6366F1]" />
+                          <h4 className="text-sm font-extrabold text-slate-900 tracking-tight">
+                            Presensi Kehadiran Siswa
+                          </h4>
+                        </div>
+                        <span className="text-xs font-medium text-slate-500">16 November 2026</span>
+                      </div>
+
+                      {/* Status Hari Ini Box */}
+                      <div className="mt-3.5 p-3 rounded-xl border border-slate-200/90 flex items-center justify-between bg-white">
+                        <span className="text-xs font-bold text-slate-700">Status Hari Ini:</span>
+                        {hasCheckedInToday ? (
+                          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-xs font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Hadir ({todayRecord?.checkInTime || '06:48 WIB'})</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-rose-200 bg-rose-50 text-[#BE123C] text-xs font-extrabold">
+                            <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+                            <span>Alpa (- WIB)</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 5 Metric Boxes in a Row: Hadir, Terlambat, Izin, Sakit, Alpa */}
+                      <div className="mt-3.5 grid grid-cols-5 gap-1.5">
+                        <div
+                          onClick={() => setActiveTab('attendance')}
+                          className="py-2.5 px-0.5 rounded-xl bg-[#FAF9FF] border border-[#EDE9FE] text-center cursor-pointer hover:opacity-90 transition-all active:scale-95"
+                        >
+                          <div className="text-base font-black text-[#6366F1]">{attendanceStats.present}</div>
+                          <div className="text-[11px] font-semibold text-slate-600 mt-0.5">Hadir</div>
+                        </div>
+                        <div
+                          onClick={() => setActiveTab('attendance')}
+                          className="py-2.5 px-0.5 rounded-xl bg-[#F5F8FF] border border-[#DBEAFE] text-center cursor-pointer hover:opacity-90 transition-all active:scale-95"
+                        >
+                          <div className="text-base font-black text-[#3B82F6]">{attendanceStats.late}</div>
+                          <div className="text-[11px] font-semibold text-slate-600 mt-0.5">Terlambat</div>
+                        </div>
+                        <div
+                          onClick={() => setActiveTab('attendance')}
+                          className="py-2.5 px-0.5 rounded-xl bg-[#FFFDF5] border border-[#FEF08A] text-center cursor-pointer hover:opacity-90 transition-all active:scale-95"
+                        >
+                          <div className="text-base font-black text-[#D97706]">{attendanceStats.permission}</div>
+                          <div className="text-[11px] font-semibold text-slate-600 mt-0.5">Izin</div>
+                        </div>
+                        <div
+                          onClick={() => setActiveTab('attendance')}
+                          className="py-2.5 px-0.5 rounded-xl bg-[#F0F9FF] border border-[#BAE6FD] text-center cursor-pointer hover:opacity-90 transition-all active:scale-95"
+                        >
+                          <div className="text-base font-black text-[#0284C7]">{attendanceStats.sick}</div>
+                          <div className="text-[11px] font-semibold text-slate-600 mt-0.5">Sakit</div>
+                        </div>
+                        <div
+                          onClick={() => setActiveTab('attendance')}
+                          className="py-2.5 px-0.5 rounded-xl bg-[#FFF1F2] border border-[#FECDD3] text-center cursor-pointer hover:opacity-90 transition-all active:scale-95"
+                        >
+                          <div className="text-base font-black text-[#E11D48]">{attendanceStats.absent}</div>
+                          <div className="text-[11px] font-semibold text-slate-600 mt-0.5">Alpa</div>
+                        </div>
                       </div>
                     </div>
 

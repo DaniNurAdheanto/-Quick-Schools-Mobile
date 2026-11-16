@@ -48,3 +48,20 @@ flutter:
     - .env
     - assets/images/
     - assets/icons/
+    - assets/fonts/geist/
+
+  fonts:
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/geist/Geist-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/geist/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/geist/Geist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/geist/Geist-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/geist/Geist-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/geist/Geist-Black.ttf
+          weight: 900

@@ -1,13 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 
 class AppTheme {
+  static const String fontFamily = 'Geist';
+
   static ThemeData get lightTheme {
-    final baseTextTheme = GoogleFonts.plusJakartaSansTextTheme();
+    const textTheme = TextTheme(
+      displayLarge: TextStyle(
+        fontFamily: fontFamily,
+        color: AppColors.textPrimaryLight,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.5,
+      ),
+      titleLarge: TextStyle(
+        fontFamily: fontFamily,
+        color: AppColors.textPrimaryLight,
+        fontWeight: FontWeight.w700,
+        fontSize: 20,
+      ),
+      titleMedium: TextStyle(
+        fontFamily: fontFamily,
+        color: AppColors.textPrimaryLight,
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
+      ),
+      bodyLarge: TextStyle(
+        fontFamily: fontFamily,
+        color: AppColors.textPrimaryLight,
+        fontSize: 16,
+      ),
+      bodyMedium: TextStyle(
+        fontFamily: fontFamily,
+        color: AppColors.textSecondaryLight,
+        fontSize: 14,
+      ),
+      bodySmall: TextStyle(
+        fontFamily: fontFamily,
+        color: AppColors.textMutedLight,
+        fontSize: 12,
+      ),
+    );
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: fontFamily,
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.backgroundLight,
@@ -21,32 +57,14 @@ class AppTheme {
         error: AppColors.danger,
         onError: Colors.white,
       ),
-      textTheme: baseTextTheme.copyWith(
-        displayLarge: baseTextTheme.displayLarge?.copyWith(
-          color: AppColors.textPrimaryLight,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: baseTextTheme.titleLarge?.copyWith(
-          color: AppColors.textPrimaryLight,
-          fontWeight: FontWeight.w700,
-          fontSize: 20,
-        ),
-        bodyLarge: baseTextTheme.bodyLarge?.copyWith(
-          color: AppColors.textPrimaryLight,
-          fontSize: 16,
-        ),
-        bodyMedium: baseTextTheme.bodyMedium?.copyWith(
-          color: AppColors.textSecondaryLight,
-          fontSize: 14,
-        ),
-      ),
-      appBarTheme: AppBarTheme(
+      textTheme: textTheme,
+      appBarTheme: const AppBarTheme(
         elevation: 0,
         centerTitle: false,
         backgroundColor: AppColors.surfaceLight,
         foregroundColor: AppColors.textPrimaryLight,
-        titleTextStyle: GoogleFonts.plusJakartaSans(
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
           fontSize: 18,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimaryLight,
@@ -69,7 +87,8 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: GoogleFonts.plusJakartaSans(
+          textStyle: const TextStyle(
+            fontFamily: fontFamily,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -78,7 +97,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.borderLight),
@@ -91,7 +111,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        hintStyle: GoogleFonts.plusJakartaSans(
+        hintStyle: const TextStyle(
+          fontFamily: fontFamily,
           color: AppColors.textMutedLight,
           fontSize: 14,
         ),
@@ -100,10 +121,9 @@ class AppTheme {
   }
 
   static ThemeData get darkTheme {
-    final baseTextTheme = GoogleFonts.plusJakartaSansTextTheme(ThemeData.dark().textTheme);
-
     return ThemeData(
       useMaterial3: true,
+      fontFamily: fontFamily,
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.backgroundDark,
@@ -113,7 +133,6 @@ class AppTheme {
         surface: AppColors.surfaceDark,
         onSurface: AppColors.textPrimaryDark,
       ),
-      textTheme: baseTextTheme,
       cardTheme: CardThemeData(
         elevation: 0,
         color: AppColors.surfaceDark,

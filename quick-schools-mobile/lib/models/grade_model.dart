@@ -126,6 +126,72 @@ class ScheduleModel {
     }
   }
 
+  int? get startMinutes {
+    final parts = startTime.split(':');
+    if (parts.length != 2) return null;
+    final h = int.tryParse(parts[0].trim());
+    final m = int.tryParse(parts[1].trim());
+    if (h == null || m == null) return null;
+    return h * 60 + m;
+  }
+
+  int? get endMinutes {
+    final parts = endTime.split(':');
+    if (parts.length != 2) return null;
+    final h = int.tryParse(parts[0].trim());
+    final m = int.tryParse(parts[1].trim());
+    if (h == null || m == null) return null;
+    return h * 60 + m;
+  }
+
+  bool get isToday => DateTime.now().weekday == dayOfWeek;
+
+  bool get isOngoing {
+    final now = DateTime.now();
+    if (now.weekday != dayOfWeek) return false;
+    final sm = startMinutes;
+    final em = endMinutes;
+    if (sm == null || em == null) return false;
+    final cur = now.hour * 60 + now.minute;
+    return cur >= sm && cur <= em;
+  }
+
+  bool get isCompleted {
+    final now = DateTime.now();
+    if (now.weekday != dayOfWeek) return false;
+    final em = endMinutes;
+    if (em == null) return false;
+    final cur = now.hour * 60 + now.minute;
+    return cur > em;
+  }
+
+  bool get isUpcoming {
+    final now = DateTime.now();
+    if (now.weekday != dayOfWeek) return false;
+    final sm = startMinutes;
+    if (sm == null) return false;
+    final cur = now.hour * 60 + now.minute;
+    return cur < sm;
+  }
+
+  int get remainingMinutes {
+    final now = DateTime.now();
+    final em = endMinutes;
+    if (em == null) return 0;
+    final cur = now.hour * 60 + now.minute;
+    final diff = em - cur;
+    return diff > 0 ? diff : 0;
+  }
+
+  int get minutesUntilStart {
+    final now = DateTime.now();
+    final sm = startMinutes;
+    if (sm == null) return 0;
+    final cur = now.hour * 60 + now.minute;
+    final diff = sm - cur;
+    return diff > 0 ? diff : 0;
+  }
+
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
     final subjectMap = json['subject'] is Map ? json['subject'] as Map : null;
     final teacherMap = json['teacher'] is Map ? json['teacher'] as Map : null;

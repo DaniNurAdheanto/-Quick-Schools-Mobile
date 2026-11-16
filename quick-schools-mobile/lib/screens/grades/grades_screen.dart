@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/grade_model.dart';
 import '../../providers/academic_provider.dart';
+import '../report_card/report_card_screen.dart';
 
 class GradesScreen extends StatefulWidget {
   const GradesScreen({super.key});
@@ -67,22 +68,65 @@ class _GradesScreenState extends State<GradesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
-                const Text(
-                  'Nilai & Capaian',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.4,
-                    color: AppColors.textPrimaryLight,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                const Text(
-                  'Rekap evaluasi akademik Semester Ganjil',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: AppColors.textSecondaryLight,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Penilaian Siswa',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.4,
+                            color: AppColors.textPrimaryLight,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Rekap evaluasi & tugas Semester Ganjil',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: AppColors.textSecondaryLight,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ReportCardScreen(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.military_tech_rounded,
+                        size: 16,
+                      ),
+                      label: const Text(
+                        'Rapot',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.surfaceLight,
+                        foregroundColor: AppColors.primary,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: const BorderSide(color: AppColors.borderLight),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 18),
 

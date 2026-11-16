@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
@@ -13,6 +14,7 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   late int _selectedDay;
+  Timer? _tickerTimer;
 
   final List<({int day, String shortName, String fullName})> _days = const [
     (day: 1, shortName: 'Sen', fullName: 'Senin'),
@@ -27,27 +29,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     super.initState();
     final weekday = DateTime.now().weekday;
     _selectedDay = (weekday >= 1 && weekday <= 5) ? weekday : 1;
+    _tickerTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) setState(() {});
+    });
   }
 
-  bool _isOngoingNow(ScheduleModel item) {
-    final now = DateTime.now();
-    if (now.weekday != item.dayOfWeek) return false;
-
-    int? toMinutes(String hhmm) {
-      final parts = hhmm.split(':');
-      if (parts.length != 2) return null;
-      final h = int.tryParse(parts[0]);
-      final m = int.tryParse(parts[1]);
-      if (h == null || m == null) return null;
-      return h * 60 + m;
-    }
-
-    final start = toMinutes(item.startTime);
-    final end = toMinutes(item.endTime);
-    if (start == null || end == null) return false;
-
-    final current = now.hour * 60 + now.minute;
-    return current >= start && current <= end;
+  @override
+  void dispose() {
+    _tickerTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -58,6 +48,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         .toList();
     final activeDayName =
         _days.firstWhere((d) => d.day == _selectedDay).fullName;
+    final isToday = DateTime.now().weekday == _selectedDay;
+    final ongoingSchedule = daySchedules
+        .cast<ScheduleModel?>()
+        .firstWhere((s) => s != null && s.isOngoing, orElse: () => null);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -180,6 +174,84 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
             const Divider(height: 1, color: AppColors.borderLight),
 
+            // Live Alert Banner if today has ongoing class
+            if (isToday && ongoingSchedule != null)
+              Container(
+                margin: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFFF0FDF4),
+                      Color(0xFFDCFCE7),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFF86EFAC),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF16A34A).withValues(alpha: 0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF16A34A),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Jam Aktif: ${ongoingSchedule.subjectName} (${ongoingSchedule.room})',
+                        style: const TextStyle(
+                          fontFamily: 'Geist',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF15803D),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: const Color(0xFF86EFAC),
+                        ),
+                      ),
+                      child: Text(
+                        'Sisa ${ongoingSchedule.remainingMinutes}m',
+                        style: const TextStyle(
+                          fontFamily: 'Geist',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF15803D),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
             // Timeline List
             Expanded(
               child: RefreshIndicator(
@@ -255,7 +327,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   Widget _buildTimelineItem(ScheduleModel item, bool isLast) {
-    final isNow = _isOngoingNow(item);
+    final isNow = item.isOngoing;
+    final isCompleted = item.isCompleted;
+    final isUpcoming = item.isUpcoming;
 
     return IntrinsicHeight(
       child: Row(
@@ -263,39 +337,90 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         children: [
           // Timeline Rail
           SizedBox(
-            width: 56,
+            width: 58,
             child: Column(
               children: [
                 Text(
                   item.startTime,
                   style: TextStyle(
+                    fontFamily: 'Geist',
                     fontSize: 13,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: isNow ? FontWeight.w900 : FontWeight.w700,
                     color: isNow
-                        ? AppColors.primary
-                        : AppColors.textPrimaryLight,
+                        ? const Color(0xFF15803D)
+                        : isCompleted
+                            ? AppColors.textMutedLight
+                            : AppColors.textPrimaryLight,
                   ),
                 ),
                 const SizedBox(height: 6),
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isNow ? AppColors.primary : AppColors.surfaceLight,
-                    border: Border.all(
-                      color:
-                          isNow ? AppColors.primary : AppColors.primaryLight,
-                      width: 2.5,
+                if (isNow)
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(0xFF16A34A).withValues(alpha: 0.25),
+                        ),
+                      ),
+                      Container(
+                        width: 9,
+                        height: 9,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFF16A34A),
+                        ),
+                      ),
+                    ],
+                  )
+                else if (isCompleted)
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.backgroundLight,
+                      border: Border.all(
+                        color: AppColors.borderLight,
+                        width: 2,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.check,
+                        size: 8,
+                        color: AppColors.textMutedLight,
+                      ),
+                    ),
+                  )
+                else
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (isUpcoming && item.minutesUntilStart <= 45)
+                          ? const Color(0xFFD97706)
+                          : AppColors.surfaceLight,
+                      border: Border.all(
+                        color: (isUpcoming && item.minutesUntilStart <= 45)
+                            ? const Color(0xFFD97706)
+                            : AppColors.primaryLight,
+                        width: 2.5,
+                      ),
                     ),
                   ),
-                ),
                 if (!isLast)
                   Expanded(
                     child: Container(
                       width: 2,
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: AppColors.borderLight,
+                      color: isNow
+                          ? const Color(0xFF86EFAC)
+                          : AppColors.borderLight,
                     ),
                   ),
               ],
@@ -308,18 +433,24 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               margin: const EdgeInsets.only(bottom: 14),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
+                color: isNow
+                    ? const Color(0xFFF0FDF4)
+                    : AppColors.surfaceLight,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
                   color: isNow
-                      ? AppColors.primary
-                      : AppColors.borderLight,
-                  width: isNow ? 1.5 : 1,
+                      ? const Color(0xFF16A34A)
+                      : isCompleted
+                          ? AppColors.borderLight.withValues(alpha: 0.6)
+                          : AppColors.borderLight,
+                  width: isNow ? 1.8 : 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0F172A).withValues(alpha: 0.03),
-                    blurRadius: 12,
+                    color: isNow
+                        ? const Color(0xFF16A34A).withValues(alpha: 0.12)
+                        : const Color(0xFF0F172A).withValues(alpha: 0.03),
+                    blurRadius: isNow ? 14 : 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
@@ -327,6 +458,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Card Header Row
                   Row(
                     children: [
                       Container(
@@ -335,74 +467,211 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primarySubtle,
+                          color: isNow
+                              ? const Color(0xFF16A34A).withValues(alpha: 0.12)
+                              : AppColors.primarySubtle,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           item.subjectCode,
-                          style: const TextStyle(
+                          style: TextStyle(
+                            fontFamily: 'Geist',
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
+                            color: isNow
+                                ? const Color(0xFF15803D)
+                                : AppColors.primary,
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
+
+                      // Status Badge Statement
                       if (isNow)
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
-                            vertical: 4,
+                            vertical: 3.5,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.successLight,
+                            color: const Color(0xFFDCFCE7),
                             borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: const Color(0xFF86EFAC),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF16A34A),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              const Text(
+                                'AKTIF',
+                                style: TextStyle(
+                                  fontFamily: 'Geist',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF15803D),
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else if (isCompleted)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundLight,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: AppColors.borderLight),
                           ),
                           child: const Text(
-                            'BERLANGSUNG',
+                            'SELESAI',
                             style: TextStyle(
+                              fontFamily: 'Geist',
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textMutedLight,
+                            ),
+                          ),
+                        )
+                      else if (isUpcoming && item.minutesUntilStart <= 45)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEF3C7),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: const Color(0xFFFDE68A),
+                            ),
+                          ),
+                          child: Text(
+                            'MULAI DLM ${item.minutesUntilStart}M',
+                            style: const TextStyle(
+                              fontFamily: 'Geist',
                               fontSize: 9.5,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.success,
+                              color: Color(0xFFB45309),
                             ),
                           ),
                         ),
+
                       const Spacer(),
                       Text(
                         '${item.startTime} - ${item.endTime}',
-                        style: const TextStyle(
+                        style: TextStyle(
+                          fontFamily: 'Geist',
                           fontSize: 11.5,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondaryLight,
+                          fontWeight: FontWeight.w700,
+                          color: isNow
+                              ? const Color(0xFF15803D)
+                              : AppColors.textSecondaryLight,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
+
+                  // Subject Title
                   Text(
                     item.subjectName,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      fontFamily: 'Geist',
                       fontSize: 15.5,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimaryLight,
+                      fontWeight: FontWeight.w800,
+                      color: isNow
+                          ? const Color(0xFF14532D)
+                          : isCompleted
+                              ? AppColors.textSecondaryLight
+                              : AppColors.textPrimaryLight,
                     ),
                   ),
+
+                  // Live Class Statement Bar
+                  if (isNow) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF16A34A).withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.radio_button_checked_rounded,
+                            size: 13,
+                            color: Color(0xFF16A34A),
+                          ),
+                          const SizedBox(width: 6),
+                          const Expanded(
+                            child: Text(
+                              'Kelas sedang berlangsung saat ini',
+                              style: TextStyle(
+                                fontFamily: 'Geist',
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF15803D),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Sisa ${item.remainingMinutes} mnt',
+                            style: const TextStyle(
+                              fontFamily: 'Geist',
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF15803D),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
                   const SizedBox(height: 8),
+
+                  // Teacher and Room info
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.person_outline_rounded,
                         size: 15,
-                        color: AppColors.textMutedLight,
+                        color: isNow
+                            ? const Color(0xFF16A34A)
+                            : AppColors.textMutedLight,
                       ),
                       const SizedBox(width: 5),
                       Expanded(
                         child: Text(
                           item.teacherName,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
+                            fontFamily: 'Geist',
                             fontSize: 12.5,
-                            color: AppColors.textSecondaryLight,
+                            fontWeight: isNow
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                            color: isNow
+                                ? const Color(0xFF166534)
+                                : AppColors.textSecondaryLight,
                           ),
                         ),
                       ),
@@ -412,25 +681,36 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundLight,
+                          color: isNow
+                              ? Colors.white
+                              : AppColors.backgroundLight,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.borderLight),
+                          border: Border.all(
+                            color: isNow
+                                ? const Color(0xFF86EFAC)
+                                : AppColors.borderLight,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.room_outlined,
                               size: 12,
-                              color: AppColors.primary,
+                              color: isNow
+                                  ? const Color(0xFF16A34A)
+                                  : AppColors.primary,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               item.room,
-                              style: const TextStyle(
+                              style: TextStyle(
+                                fontFamily: 'Geist',
                                 fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimaryLight,
+                                fontWeight: FontWeight.w700,
+                                color: isNow
+                                    ? const Color(0xFF15803D)
+                                    : AppColors.textPrimaryLight,
                               ),
                             ),
                           ],
