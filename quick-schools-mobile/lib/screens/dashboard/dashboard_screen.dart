@@ -6,7 +6,6 @@ import '../../providers/auth_provider.dart';
 import '../../providers/attendance_provider.dart';
 import '../../providers/academic_provider.dart';
 import '../../models/user_model.dart';
-import '../../models/attendance_model.dart';
 import '../../models/grade_model.dart';
 import '../../models/announcement_model.dart';
 import '../../core/constants/app_colors.dart';
@@ -206,10 +205,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               // Unified Smart Student & Attendance Card
               _buildStudentActionCard(context, user, attendance),
-              const SizedBox(height: 18),
-
-              // Presensi Kehadiran Siswa Section
-              _buildAttendanceDetailCard(context, attendance),
               const SizedBox(height: 22),
 
               // Menu Layanan Siswa Header & Grid
@@ -793,12 +788,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).push(
+                          onPressed: () async {
+                            await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const FaceAttendanceScreen(),
                               ),
                             );
+                            if (mounted) setState(() {});
                           },
                           icon: const Icon(
                             Icons.face_retouching_natural_rounded,
@@ -863,364 +859,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  /// Section Presensi Kehadiran Siswa
-  /// Menampilkan status presensi hari ini dan rekapitulasi kehadiran (Hadir, Terlambat, Izin, Sakit, Alpa)
-  Widget _buildAttendanceDetailCard(
-    BuildContext context,
-    AttendanceProvider attendance,
-  ) {
-    final isDark = AppColors.isDark(context);
-    final today = DateTime.now();
-    final dateStr = DateFormat('d MMMM yyyy', 'id_ID').format(today);
-    final todayRecord = attendance.todayAttendance;
 
-    final (
-      statusLabel,
-      statusIcon,
-      statusBg,
-      statusBorder,
-      statusFg,
-    ) = _resolveTodayAttendanceStatus(todayRecord, isDark);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border(context)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: isDark ? 0.25 : 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header: Icon + Title on Left, Date on Right
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.event_available_rounded,
-                      color: Color(0xFF6366F1),
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Presensi Kehadiran Siswa',
-                          style: TextStyle(
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.2,
-                            color: AppColors.textPrimary(context),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                dateStr,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 14),
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
-          ),
-          const SizedBox(height: 14),
-
-          // Status Hari Ini Box
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF0F172A) : Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Status Hari Ini:',
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? const Color(0xFFCBD5E1)
-                        : const Color(0xFF334155),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusBg,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: statusBorder),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(statusIcon, size: 15, color: statusFg),
-                      const SizedBox(width: 6),
-                      Text(
-                        statusLabel,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w800,
-                          color: statusFg,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          // 5 Metric Boxes in a Row: Hadir, Terlambat, Izin, Sakit, Alpa
-          Row(
-            children: [
-              Expanded(
-                child: _buildAttendanceMetricBox(
-                  count: attendance.presentCount,
-                  label: 'Hadir',
-                  numberColor: const Color(0xFF6366F1),
-                  bgColor: isDark
-                      ? const Color(0xFF1E1B4B).withValues(alpha: 0.5)
-                      : const Color(0xFFFAF9FF),
-                  borderColor: isDark
-                      ? const Color(0xFF3730A3).withValues(alpha: 0.5)
-                      : const Color(0xFFEDE9FE),
-                  isDark: isDark,
-                  onTap: () => setState(() => _currentIndex = 1),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildAttendanceMetricBox(
-                  count: attendance.lateCount,
-                  label: 'Terlambat',
-                  numberColor: const Color(0xFF3B82F6),
-                  bgColor: isDark
-                      ? const Color(0xFF172554).withValues(alpha: 0.5)
-                      : const Color(0xFFF5F8FF),
-                  borderColor: isDark
-                      ? const Color(0xFF1E40AF).withValues(alpha: 0.5)
-                      : const Color(0xFFDBEAFE),
-                  isDark: isDark,
-                  onTap: () => setState(() => _currentIndex = 1),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildAttendanceMetricBox(
-                  count: attendance.permissionCount,
-                  label: 'Izin',
-                  numberColor: const Color(0xFFD97706),
-                  bgColor: isDark
-                      ? const Color(0xFF451A03).withValues(alpha: 0.4)
-                      : const Color(0xFFFFFDF5),
-                  borderColor: isDark
-                      ? const Color(0xFF78350F).withValues(alpha: 0.4)
-                      : const Color(0xFFFEF08A),
-                  isDark: isDark,
-                  onTap: () => setState(() => _currentIndex = 1),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildAttendanceMetricBox(
-                  count: attendance.sickCount,
-                  label: 'Sakit',
-                  numberColor: const Color(0xFF0284C7),
-                  bgColor: isDark
-                      ? const Color(0xFF082F49).withValues(alpha: 0.5)
-                      : const Color(0xFFF0F9FF),
-                  borderColor: isDark
-                      ? const Color(0xFF075985).withValues(alpha: 0.5)
-                      : const Color(0xFFBAE6FD),
-                  isDark: isDark,
-                  onTap: () => setState(() => _currentIndex = 1),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildAttendanceMetricBox(
-                  count: attendance.absentCount,
-                  label: 'Alpa',
-                  numberColor: const Color(0xFFE11D48),
-                  bgColor: isDark
-                      ? const Color(0xFF4C0519).withValues(alpha: 0.4)
-                      : const Color(0xFFFFF1F2),
-                  borderColor: isDark
-                      ? const Color(0xFF9F1239).withValues(alpha: 0.4)
-                      : const Color(0xFFFECDD3),
-                  isDark: isDark,
-                  onTap: () => setState(() => _currentIndex = 1),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  (String, IconData, Color, Color, Color) _resolveTodayAttendanceStatus(
-    AttendanceModel? todayRecord,
-    bool isDark,
-  ) {
-    if (todayRecord == null) {
-      return (
-        'Alpa (- WIB)',
-        Icons.warning_amber_rounded,
-        isDark ? const Color(0xFF3F0B18) : const Color(0xFFFFF1F2),
-        isDark ? const Color(0xFF9F1239) : const Color(0xFFFDA4AF),
-        const Color(0xFFBE123C),
-      );
-    }
-
-    final time = todayRecord.checkInTime ?? '- WIB';
-
-    switch (todayRecord.status) {
-      case AttendanceStatus.present:
-        return (
-          'Hadir ($time)',
-          Icons.check_circle_outline_rounded,
-          isDark ? const Color(0xFF052E16) : const Color(0xFFF0FDF4),
-          isDark ? const Color(0xFF166534) : const Color(0xFF86EFAC),
-          const Color(0xFF15803D),
-        );
-      case AttendanceStatus.late:
-        return (
-          'Terlambat ($time)',
-          Icons.schedule_rounded,
-          isDark ? const Color(0xFF451A03) : const Color(0xFFFFFBEB),
-          isDark ? const Color(0xFF92400E) : const Color(0xFFFCD34D),
-          const Color(0xFFB45309),
-        );
-      case AttendanceStatus.excused:
-        final isSick =
-            todayRecord.notes?.toLowerCase().contains('sakit') == true;
-        if (isSick) {
-          return (
-            'Sakit ($time)',
-            Icons.medical_services_outlined,
-            isDark ? const Color(0xFF082F49) : const Color(0xFFF0F9FF),
-            isDark ? const Color(0xFF075985) : const Color(0xFFBAE6FD),
-            const Color(0xFF0284C7),
-          );
-        }
-        return (
-          'Izin ($time)',
-          Icons.info_outline_rounded,
-          isDark ? const Color(0xFF172554) : const Color(0xFFEFF6FF),
-          isDark ? const Color(0xFF1E40AF) : const Color(0xFF93C5FD),
-          const Color(0xFF1D4ED8),
-        );
-      case AttendanceStatus.absent:
-        return (
-          'Alpa ($time)',
-          Icons.warning_amber_rounded,
-          isDark ? const Color(0xFF3F0B18) : const Color(0xFFFFF1F2),
-          isDark ? const Color(0xFF9F1239) : const Color(0xFFFDA4AF),
-          const Color(0xFFBE123C),
-        );
-    }
-  }
-
-  Widget _buildAttendanceMetricBox({
-    required int count,
-    required String label,
-    required Color numberColor,
-    required Color bgColor,
-    required Color borderColor,
-    required bool isDark,
-    VoidCallback? onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: borderColor, width: 1.2),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  '$count',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    color: numberColor,
-                    height: 1.1,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF475569),
-                    height: 1.1,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildQuickActions(BuildContext context) {
     final services = [
@@ -1229,18 +868,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Icons.face_retouching_natural_rounded,
         AppColors.primary,
         const Color(0xFFF2EEFF),
-        () {
+        () async {
           final attendance =
               Provider.of<AttendanceProvider>(context, listen: false);
           if (attendance.hasCheckedInToday) {
             setState(() => _currentIndex = 1);
             return;
           }
-          Navigator.of(context).push(
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => const FaceAttendanceScreen(),
             ),
           );
+          if (mounted) setState(() {});
         },
       ),
       (

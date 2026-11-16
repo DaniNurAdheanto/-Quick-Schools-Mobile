@@ -8,6 +8,7 @@ import 'package:quick_schools_mobile/providers/academic_provider.dart';
 import 'package:quick_schools_mobile/providers/attendance_provider.dart';
 import 'package:quick_schools_mobile/providers/auth_provider.dart';
 import 'package:quick_schools_mobile/providers/theme_provider.dart';
+import 'package:quick_schools_mobile/screens/attendance/attendance_screen.dart';
 import 'package:quick_schools_mobile/screens/dashboard/dashboard_screen.dart';
 
 void main() {
@@ -15,7 +16,8 @@ void main() {
     await initializeDateFormatting('id_ID', null);
   });
 
-  testWidgets('Dashboard renders Presensi Kehadiran Siswa section and metrics',
+  testWidgets(
+      'Home dashboard removes Presensi Kehadiran Siswa, and AttendanceScreen renders it',
       (tester) async {
     final authProvider = AuthProvider();
     authProvider.switchDemoRole(UserRole.student);
@@ -27,6 +29,7 @@ void main() {
     final academicProvider = AcademicProvider();
     await academicProvider.fetchAllAcademicData();
 
+    // 1. Test Dashboard Home: Presensi Kehadiran Siswa is NOT present on Home
     await tester.pumpWidget(
       MultiProvider(
         providers: [
@@ -47,7 +50,31 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Verify Presensi Kehadiran Siswa Header is present
+    // Verify Presensi Kehadiran Siswa is REMOVED from Home
+    expect(find.text('Presensi Kehadiran Siswa'), findsNothing);
+
+    // 2. Test AttendanceScreen: Presensi Kehadiran Siswa is present on Attendance Page
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
+          ChangeNotifierProvider<AttendanceProvider>.value(
+              value: attendanceProvider),
+          ChangeNotifierProvider<AcademicProvider>.value(
+              value: academicProvider),
+          ChangeNotifierProvider<ThemeProvider>(
+              create: (_) => ThemeProvider()),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const AttendanceScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Verify Presensi Kehadiran Siswa Header is present on AttendanceScreen
     expect(find.text('Presensi Kehadiran Siswa'), findsOneWidget);
 
     // Verify Status Hari Ini section is present

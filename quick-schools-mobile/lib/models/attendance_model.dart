@@ -76,6 +76,7 @@ class AttendanceModel {
   final double? latitude;
   final double? longitude;
   final double? locationAccuracy;
+  final String? photoUrl;
 
   AttendanceModel({
     required this.id,
@@ -89,6 +90,7 @@ class AttendanceModel {
     this.latitude,
     this.longitude,
     this.locationAccuracy,
+    this.photoUrl,
   });
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) {
@@ -121,6 +123,7 @@ class AttendanceModel {
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       locationAccuracy: (json['locationAccuracy'] as num?)?.toDouble(),
+      photoUrl: (json['photoUrl'] ?? json['photo'] ?? json['imageUrl'])?.toString(),
     );
   }
 
@@ -137,6 +140,7 @@ class AttendanceModel {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
       if (locationAccuracy != null) 'locationAccuracy': locationAccuracy,
+      if (photoUrl != null) 'photoUrl': photoUrl,
     };
   }
 }

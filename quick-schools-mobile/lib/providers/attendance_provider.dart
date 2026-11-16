@@ -43,7 +43,8 @@ class AttendanceProvider with ChangeNotifier {
     // Calculate based on standard semester effective days (approx 90 days)
     const effectiveSemesterDays = 90;
     final deductions = absentCount * 1.0 + (lateCount * 0.2);
-    final rate = ((effectiveSemesterDays - deductions) / effectiveSemesterDays) * 100;
+    final rate =
+        ((effectiveSemesterDays - deductions) / effectiveSemesterDays) * 100;
     return rate.clamp(60.0, 100.0);
   }
 
@@ -95,6 +96,7 @@ class AttendanceProvider with ChangeNotifier {
     double? latitude,
     double? longitude,
     double? locationAccuracy,
+    String? photoUrl,
   }) async {
     // Student attendance is strictly once per day
     if (todayAttendance != null) {
@@ -106,73 +108,55 @@ class AttendanceProvider with ChangeNotifier {
 
     final now = DateTime.now();
     final timeFormatted = '${DateFormat('HH:mm').format(now)} WIB';
-    final token = await SecureStorageService().getToken();
 
-    // Instant local update in frontend demo mode
-    if (token == null || token == 'mock-jwt-token-quick-schools') {
-      _attendances.insert(
-        0,
-        AttendanceModel(
-          id: 'att-${now.millisecondsSinceEpoch}',
-          studentId: studentId,
-          studentName: studentName ?? 'Raditya Pratama',
-          className: className ?? 'X MIPA 1',
-          date: now,
-          status: status,
-          checkInTime: timeFormatted,
-          notes: notes ?? 'Presensi Face Recognition Terverifikasi',
-          latitude: latitude,
-          longitude: longitude,
-          locationAccuracy: locationAccuracy,
-        ),
-      );
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    }
+    final newRecord = AttendanceModel(
+      id: 'att-${now.millisecondsSinceEpoch}',
+      studentId: studentId,
+      studentName: studentName ?? 'Raditya Pratama',
+      className: className ?? 'X MIPA 1',
+      date: now,
+      status: status,
+      checkInTime: timeFormatted,
+      notes: notes ?? 'Presensi Face Recognition Terverifikasi',
+      latitude: latitude,
+      longitude: longitude,
+      locationAccuracy: locationAccuracy,
+    );
 
+    // Instant local state update so UI updates immediately without waiting
+    _attendances.removeWhere((a) =>
+        a.date.year == now.year &&
+        a.date.month == now.month &&
+        a.date.day == now.day);
+    _attendances.insert(0, newRecord);
+    _isLoading = false;
+    notifyListeners();
+
+    // Background sync with API backend
     try {
-      final response = await _apiClient.dio.post(
-        ApiEndpoints.markAttendance,
-        data: {
-          'studentId': studentId,
-          'status': status.toPrismaString(),
-          'notes': notes,
-          'date': now.toIso8601String(),
-          if (latitude != null) 'latitude': latitude,
-          if (longitude != null) 'longitude': longitude,
-        },
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        await fetchAttendance();
-        return true;
+      final token = await SecureStorageService().getToken();
+      if (token != null && token != 'mock-jwt-token-quick-schools') {
+        await _apiClient.dio.post(
+          ApiEndpoints.markAttendance,
+          data: {
+            'studentId': studentId,
+            'status': status.toPrismaString(),
+            'notes': notes,
+            'date': now.toIso8601String(),
+            if (latitude != null) 'latitude': latitude,
+            if (longitude != null) 'longitude': longitude,
+          },
+        );
       }
     } catch (_) {}
 
-    _attendances.insert(
-      0,
-      AttendanceModel(
-        id: 'att-${now.millisecondsSinceEpoch}',
-        studentId: studentId,
-        studentName: studentName ?? 'Raditya Pratama',
-        className: className ?? 'X MIPA 1',
-        date: now,
-        status: status,
-        checkInTime: timeFormatted,
-        notes: notes ?? 'Presensi Face Recognition Terverifikasi',
-        latitude: latitude,
-        longitude: longitude,
-        locationAccuracy: locationAccuracy,
-      ),
-    );
-    _isLoading = false;
-    notifyListeners();
     return true;
   }
 
   void _loadSeedData() {
+    final today = todayAttendance;
     _attendances = [
+      if (today != null) today,
       AttendanceModel(
         id: 'att-1',
         studentId: 's-202',
